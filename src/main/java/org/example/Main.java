@@ -17,7 +17,6 @@ public class Main {
         System.out.println("请输入需要的单词发音类型：0-美式  1-英式");
         Scanner scanner = new Scanner(System.in);
         String targetType = scanner.next();
-
         //有道api  美式：type=0   英式：type=0
         String baseUrl = "http://dict.youdao.com/dictvoice?type=" + targetType + "&audio=";
 
@@ -26,11 +25,18 @@ public class Main {
         String targetWordTxt = scanner.next();
         File root = new File(targetWordTxt);
         ArrayList<String> words = excel(targetWordTxt);
-        System.out.println(words.size());
 
+        System.out.println("请输入操作系统 类型: 0-MacOS 1-Windows");
+        scanner = new Scanner(System.in);
+        String ocType = scanner.next();
 
-//        //获取单词列表
-        BufferedReader reader = null;
+        String rootDir = "";
+
+        if (ocType.equals("0")) {
+            rootDir = root.getParent() + "/words";
+        } else {
+            rootDir = root.getParent() + "\\words";
+        }
 
 
         System.out.println("以行为单位读取文件内容，一次读一整行：");
@@ -38,7 +44,7 @@ public class Main {
             //默认第一行为标题行，i = 0
             String word = words.get(i);
             String wordUrl = baseUrl + word;
-            DownloadUtils downloadUtils = new DownloadUtils(wordUrl, word, "mp3", root.getParent() + "/words");
+            DownloadUtils downloadUtils = new DownloadUtils(wordUrl, word, "mp3", rootDir);
             try {
                 downloadUtils.httpDownload();
                 System.out.print("\t \t \t下载成功");
@@ -68,7 +74,6 @@ public class Main {
             //默认第一行为标题行，i = 0
             XSSFRow row = sheetAt.getRow(i);
             if (row != null) {
-                System.out.println(row.getCell(0).toString());
                 dirverName.add(row.getCell(0).toString());
             }
         }
